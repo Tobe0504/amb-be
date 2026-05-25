@@ -71,11 +71,12 @@ export const requestLoginOtp = async (payload: RequestOtpInput) => {
   });
 
   const delivery = await sendLoginOtpEmail(email, code);
+  const shouldExposeOtp = env.NODE_ENV !== "production" || delivery.channel === "console";
 
   return {
     delivery,
     expiresAt: expiresAt.toISOString(),
-    devOtp: env.NODE_ENV !== "production" ? code : undefined,
+    devOtp: shouldExposeOtp ? code : undefined,
   };
 };
 
